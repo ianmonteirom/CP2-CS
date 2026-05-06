@@ -1,12 +1,12 @@
-# Projeto Banco — API
+# CP2-CS — Banco Digital API
 
 ## 1. Identificação
 
 | Nome | RM |
 |---|---|
-| [Nome Integrante 1] | RM000000 |
-| [Nome Integrante 2] | RM000000 |
-| [Nome Integrante 3] | RM000000 |
+| Ian Monteiro Moreira | RM558652 |
+| Bruno Silva Bastos | RM550416 |
+| João Boht | RM558690 |
 
 ---
 
@@ -23,10 +23,10 @@ Produto voltado a clientes que necessitam de equipamento para receber pagamentos
 | Crédito | 2,5% |
 | Crediário Parcelado | 3,8% |
 
-Regra de negócio adicional: um cliente não pode ter duas máquinas aprovadas para o mesmo tipo de pagamento.
+Regra adicional: um cliente não pode ter duas máquinas aprovadas para o mesmo tipo de pagamento.
 
 ### Emprestimo
-Produto de crédito pessoal. A aprovação é baseada em um **score de crédito** calculado dinamicamente no domínio:
+Produto de crédito pessoal com aprovação baseada em **score de crédito** calculado dinamicamente no domínio:
 
 | Critério | Pontos |
 |---|---|
@@ -35,7 +35,7 @@ Produto de crédito pessoal. A aprovação é baseada em um **score de crédito*
 | Idade acima de 60 anos (PF) | +50 |
 | Por contratação aprovada anterior | +50 cada |
 
-Score mínimo para aprovação: **500 pontos**. Taxa de juros: **1,5% a.m.** O valor da parcela é calculado via fórmula Price.
+Score mínimo para aprovação: **500 pontos**. Taxa de juros: **1,5% a.m.** Parcela calculada via fórmula Price.
 
 ---
 
@@ -44,42 +44,42 @@ Score mínimo para aprovação: **500 pontos**. Taxa de juros: **1,5% a.m.** O v
 > Veja `/docs/diagrama-classes.png`
 
 ```
-┌─────────────┐         ┌──────────────┐
-│   Agencia   │1      N │   Cliente    │ <<abstract>>
-│─────────────│◄────────│──────────────│
-│ Id          │         │ Id           │
-│ Nome        │         │ Nome         │
-│ Numero      │         │ Email        │
-│ Cidade      │         │ Telefone     │
-│ Estado      │         │ AgenciaId    │
-└─────────────┘         └──────┬───────┘
-                               │
-               ┌───────────────┴──────────────┐
-               ▼                              ▼
-    ┌──────────────────┐           ┌───────────────────┐
-    │  PessoaFisica    │           │  PessoaJuridica   │
-    │──────────────────│           │───────────────────│
-    │ Cpf              │           │ Cnpj              │
-    │ DataNascimento   │           │ RazaoSocial       │
-    └──────────────────┘           └───────────────────┘
+┌─────────────┐         ┌──────────────────────────┐
+│   Agencia   │1      N │   Cliente  <<abstract>>  │
+│─────────────│◄────────│──────────────────────────│
+│ Id          │         │ Id                       │
+│ Nome        │         │ Nome                     │
+│ Numero      │         │ Email                    │
+│ Cidade      │         │ Telefone                 │
+│ Estado      │         │ AgenciaId                │
+└─────────────┘         └────────────┬─────────────┘
+                                     │
+                      ┌──────────────┴──────────────┐
+                      ▼                             ▼
+          ┌───────────────────┐        ┌───────────────────────┐
+          │   PessoaFisica    │        │    PessoaJuridica     │
+          │───────────────────│        │───────────────────────│
+          │ Cpf               │        │ Cnpj                  │
+          │ DataNascimento    │        │ RazaoSocial           │
+          └───────────────────┘        └───────────────────────┘
 
-┌───────────────┐        ┌─────────────────┐
-│  Contratacao  │N     1 │    Produto      │ <<abstract>>
-│───────────────│────────│─────────────────│
-│ Id            │        │ Id              │
-│ ClienteId     │        │ Nome            │
-│ ProdutoId     │        │ Descricao       │
-│ Status        │        └────────┬────────┘
-│ DataSolicit.  │                 │
-│ DataProcess.  │     ┌───────────┴──────────┐
-│ Observacao    │     ▼                      ▼
-└───────────────┘ ┌──────────────┐  ┌──────────────┐
-                  │MaquinaDeCartao│  │  Emprestimo  │
-                  │──────────────│  │──────────────│
-                  │TipoPagamento │  │ValorSolicit. │
-                  │TaxaMDR       │  │PrazoMeses    │
-                  └──────────────┘  │TaxaJuros     │
-                                    └──────────────┘
+┌──────────────────┐        ┌─────────────────────────────┐
+│   Contratacao    │N     1 │   Produto   <<abstract>>    │
+│──────────────────│────────│─────────────────────────────│
+│ Id               │        │ Id                          │
+│ ClienteId        │        │ Nome                        │
+│ ProdutoId        │        │ Descricao                   │
+│ Status           │        └──────────────┬──────────────┘
+│ DataSolicitacao  │                       │
+│ DataProcessamento│        ┌──────────────┴──────────────┐
+│ Observacao       │        ▼                             ▼
+└──────────────────┘  ┌─────────────────┐   ┌─────────────────────┐
+                      │ MaquinaDeCartao │   │     Emprestimo      │
+                      │─────────────────│   │─────────────────────│
+                      │ TipoPagamento   │   │ ValorSolicitado     │
+                      │ TaxaMDR         │   │ PrazoMeses          │
+                      └─────────────────┘   │ TaxaJurosMensal     │
+                                            └─────────────────────┘
 ```
 
 ---
@@ -123,7 +123,7 @@ Score mínimo para aprovação: **500 pontos**. Taxa de juros: **1,5% a.m.** O v
 ```json
 // Request
 {
-  "nome": "João da Silva",
+  "nome": "João Silva",
   "email": "joao@email.com",
   "telefone": "11999999999",
   "agenciaId": 1,
@@ -134,7 +134,7 @@ Score mínimo para aprovação: **500 pontos**. Taxa de juros: **1,5% a.m.** O v
 {
   "id": 1,
   "tipo": "PF",
-  "nome": "João da Silva",
+  "nome": "João Silva",
   "email": "joao@email.com",
   "telefone": "11999999999",
   "agenciaId": 1,
@@ -185,97 +185,81 @@ Score mínimo para aprovação: **500 pontos**. Taxa de juros: **1,5% a.m.** O v
 {
   "id": 1,
   "clienteId": 1,
-  "nomeCliente": "João da Silva",
+  "nomeCliente": "João Silva",
   "produtoId": 1,
   "nomeProduto": "Maquininha Débito",
-  "status": "Pendente",
+  "status": "Aprovada",
   "dataSolicitacao": "2026-05-05T10:03:00Z",
-  "dataProcessamento": null,
-  "observacao": null
+  "dataProcessamento": "2026-05-05T10:03:00Z",
+  "observacao": "Aprovado. Taxa MDR: 1.2% para Debito."
 }
 ```
 
 ### GET /api/contratacoes/{id}
 ```json
-// Response 200 — após processamento pelo consumer
+// Response 200
 {
   "id": 1,
   "clienteId": 1,
-  "nomeCliente": "João da Silva",
+  "nomeCliente": "João Silva",
   "produtoId": 1,
   "nomeProduto": "Maquininha Débito",
   "status": "Aprovada",
   "dataSolicitacao": "2026-05-05T10:03:00Z",
-  "dataProcessamento": "2026-05-05T10:03:02Z",
+  "dataProcessamento": "2026-05-05T10:03:00Z",
   "observacao": "Aprovado. Taxa MDR: 1.2% para Debito."
 }
 ```
 
 ---
 
-## 7. Como executar os testes
-
-```bash
-dotnet test CP2_CS.Tests/CP2_CS.Tests.csproj --verbosity normal
-```
-
-> Inserir print do resultado aqui
-
----
-
-## 8. Print do painel RabbitMQ
-
-> Inserir print do painel RabbitMQ mostrando a fila `contratacoes` com mensagens processadas
-
----
-
-## 9. Print da API no Swagger
-
-> Inserir print do Swagger com pelo menos uma contratação aprovada
-
----
-
-## Como executar
+## 7. Como executar
 
 ### Pré-requisitos
 - .NET 8 SDK
 - Oracle Client (conexão com oracle.fiap.com.br)
-- RabbitMQ rodando em localhost:5672
 
 ### Configurar credenciais Oracle
 Edite `appsettings.json`:
 ```json
 "ConnectionStrings": {
-  "DefaultConnection": "Data Source=...;User Id=RM000000;Password=ddmmyyyy;"
+  "DefaultConnection": "Data Source=(DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=oracle.fiap.com.br)(PORT=1521))(CONNECT_DATA=(SID=ORCL)));User Id=RM558652;Password=SUA_SENHA;"
 }
 ```
 
 ### Aplicar migrations
 ```bash
-dotnet ef migrations add Initial --project CP2_CS.Api
-dotnet ef database update --project CP2_CS.Api
+Add-Migration Initial
+Update-Database
+```
+
+### Inserir produtos de exemplo (SQL)
+```sql
+INSERT INTO "TB_PRODUTO" ("Nome", "Descricao", "Tipo", "TipoPagamento", "TaxaMDR")
+VALUES ('Maquininha Débito', 'Pagamentos no débito', 'MAQUINA_CARTAO', 1, 1.2);
+
+INSERT INTO "TB_PRODUTO" ("Nome", "Descricao", "Tipo", "TipoPagamento", "TaxaMDR")
+VALUES ('Maquininha Crédito', 'Pagamentos no crédito', 'MAQUINA_CARTAO', 2, 2.5);
+
+INSERT INTO "TB_PRODUTO" ("Nome", "Descricao", "Tipo", "ValorSolicitado", "PrazoMeses", "TaxaJurosMensal")
+VALUES ('Empréstimo Pessoal 12x', 'Crédito pessoal em 12 parcelas', 'EMPRESTIMO', 10000, 12, 1.5);
+
+INSERT INTO "TB_PRODUTO" ("Nome", "Descricao", "Tipo", "ValorSolicitado", "PrazoMeses", "TaxaJurosMensal")
+VALUES ('Empréstimo Capital de Giro', 'Crédito para capital de giro', 'EMPRESTIMO', 50000, 24, 1.5);
+
+COMMIT;
 ```
 
 ### Executar a API
 ```bash
-dotnet run --project CP2_CS.Api
+dotnet run
 ```
+Acesse: `https://localhost:{porta}/swagger`
 
-Acesse: `https://localhost:5001/swagger`
+---
 
-### Inserir produtos de exemplo (SQL)
-```sql
-INSERT INTO TB_PRODUTO (NOME, DESCRICAO, TIPO, TIPOPAGAMENTO, TAXAMDR)
-VALUES ('Maquininha Débito', 'Máquina para pagamentos no débito', 'MAQUINA_CARTAO', 1, 1.2);
+## 8. Print do painel RabbitMQ
+> *(a ser inserido)*
 
-INSERT INTO TB_PRODUTO (NOME, DESCRICAO, TIPO, TIPOPAGAMENTO, TAXAMDR)
-VALUES ('Maquininha Crédito', 'Máquina para pagamentos no crédito', 'MAQUINA_CARTAO', 2, 2.5);
-
-INSERT INTO TB_PRODUTO (NOME, DESCRICAO, TIPO, VALORSOLICITADO, PRAZOMESES, TAXAJUROSMENSSAL)
-VALUES ('Empréstimo Pessoal 12x', 'Crédito pessoal em 12 parcelas', 'EMPRESTIMO', 10000, 12, 1.5);
-
-INSERT INTO TB_PRODUTO (NOME, DESCRICAO, TIPO, VALORSOLICITADO, PRAZOMESES, TAXAJUROSMENSSAL)
-VALUES ('Empréstimo Capital de Giro', 'Crédito para capital de giro em 24 parcelas', 'EMPRESTIMO', 50000, 24, 1.5);
-
-COMMIT;
-```
+## 9. Print da API no Swagger com contratação aprovada
+> *(a ser inserido)*
