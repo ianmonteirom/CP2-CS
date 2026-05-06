@@ -1,0 +1,114 @@
+[
+  {
+    "ContainingType": "CP2_CS.Controllers.AgenciasController",
+    "Method": "Adicionar",
+    "RelativePath": "api/agencias",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "dto",
+        "Type": "CP2_CS.Application.DTOs.CriarAgenciaDTO",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "CP2_CS.Controllers.AgenciasController",
+    "Method": "ConsultarPorId",
+    "RelativePath": "api/agencias/{id}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "CP2_CS.Controllers.ClientesController",
+    "Method": "ConsultarPorId",
+    "RelativePath": "api/clientes/{id}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "CP2_CS.Controllers.ClientesController",
+    "Method": "AdicionarPessoaFisica",
+    "RelativePath": "api/clientes/pf",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "dto",
+        "Type": "CP2_CS.Application.DTOs.CriarPessoaFisicaDTO",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "CP2_CS.Controllers.ClientesController",
+    "Method": "AdicionarPessoaJuridica",
+    "RelativePath": "api/clientes/pj",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "dto",
+        "Type": "CP2_CS.Application.DTOs.CriarPessoaJuridicaDTO",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "CP2_CS.Controllers.ContratacoesController",
+    "Method": "Solicitar",
+    "RelativePath": "api/contratacoes",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "dto",
+        "Type": "CP2_CS.Application.DTOs.CriarContratacaoDTO",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "CP2_CS.Controllers.ContratacoesController",
+    "Method": "ConsultarPorId",
+    "RelativePath": "api/contratacoes/{id}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  }
+]
