@@ -44,6 +44,13 @@ Score mínimo para aprovação: **500 pontos**. Taxa de juros: **1,5% a.m.** Par
 > Veja `/docs/diagrama-classes.png`
 
 ```
+
+
+
+
+
+
+
 ┌─────────────┐         ┌──────────────────────────┐
 │   Agencia   │1      N │   Cliente  <<abstract>>  │
 │─────────────│◄────────│──────────────────────────│
